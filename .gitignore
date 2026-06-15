@@ -1,0 +1,30 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Browser artifacts ---
+browser-profile/
+screenshots/
+*.jpg
+*.png
+*.jpeg
+
+# --- Deprecated / legacy ---
+SKILL.md
+
+# --- OS ---
+.DS_Store
+Thumbs.db

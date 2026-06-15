@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head><title>Drag Test</title>
+<style>
+  body { font-family: sans-serif; padding: 40px; }
+  #slider-container { width: 400px; margin: 20px 0; position: relative; }
+  #track { width: 400px; height: 40px; background: #eee; border-radius: 20px; position: relative; }
+  #handle { width: 60px; height: 60px; background: #4CAF50; border-radius: 50%; position: absolute; top: -10px; left: 0; cursor: grab; line-height: 60px; text-align: center; color: white; font-size: 12px; user-select: none; }
+  #handle:active { cursor: grabbing; }
+  #status { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 8px; }
+  #dropzone { width: 200px; height: 100px; border: 2px dashed #999; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 20px 0; background: #fafafa; transition: all 0.3s; }
+  #dropzone.dragover { background: #e3f2fd; border-color: #2196F3; }
+  .log { color: #666; font-size: 14px; }
+</style>
+</head>
+<body>
+  <h2>Drag Test</h2>
+  
+  <h3>Test 1: Drag Slider</h3>
+  <div id="slider-container">
+    <div id="track">
+      <div id="handle" draggable="false">⬅拖</div>
+    </div>
+  </div>
+  <div id="slider-value">Position: 0px</div>
+
+  <h3>Test 2: Drag to Dropzone</h3>
+  <div id="draggable" draggable="true" style="width:100px;height:100px;background:#FF5722;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;cursor:move;">拖我</div>
+  <div id="dropzone">拖到这里</div>
+
+  <div id="status" class="log">Waiting for action...</div>
+
+  <script>
+    // Slider
+    let isDragging = false;
+    const handle = document.getElementById('handle');
+    const track = document.getElementById('track');
+    const sliderVal = document.getElementById('slider-value');
+    const status = document.getElementById('status');
+    
+    handle.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      status.textContent = 'Slider: mousedown';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const rect = track.getBoundingClientRect();
+      let x = Math.max(0, Math.min(e.clientX - rect.left - 30, rect.width - 60));
+      handle.style.left = x + 'px';
+      sliderVal.textContent = 'Position: ' + Math.round(x) + 'px';
+      status.textContent = 'Slider: dragging to ' + Math.round(x) + 'px';
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        status.textContent = 'Slider: mouseup at ' + handle.style.left;
+      }
+    });
+
+    // Drag to Dropzone
+    const draggable = document.getElementById('draggable');
+    const dropzone = document.getElementById('dropzone');
+    
+    draggable.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', 'dragged!');
+      status.textContent = 'Drag start';
+    });
+    
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('dragover');
+    });
+    
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      dropzone.textContent = '✅ 已接收!';
+      dropzone.style.background = '#c8e6c9';
+      status.textContent = 'Drop successful!';
+    });
+  </script>
+</body>
+</html>
